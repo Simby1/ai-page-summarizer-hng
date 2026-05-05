@@ -35,14 +35,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       summarizeBtn.disabled = true;
   
       try {
-        // Request content from the Content Script-TODO
+        // Request content from the Content Script
         const response = await chrome.tabs.sendMessage(tab.id, { action: "GET_CONTENT" });
         
         if (!response || !response.content) {
           throw new Error("Could not extract content from this page.");
         }
-  
-        // Send content to Background Script for AI processing-TODO
+        
+        // Calculate reading time
+        const wordCount = response.content.split(/\s+/).length;
+        const readingTime = Math.ceil(wordCount / 200);
+        // Update UI
+        pageTitleElement.textContent = `${tab.title} • ${readingTime} min read`;
+
+        // Send content to Background Script for AI processing
         chrome.runtime.sendMessage(
           { action: "SUMMARIZE", text: response.content },
           (apiResult) => {
@@ -52,7 +58,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (apiResult.error) {
               outputArea.innerHTML = `<p style="color: #ef4444;">Error: ${apiResult.error}</p>`;
             } else {
-              outputArea.innerText = apiResult.summary;
+              // clean summary
+              let cleanSummary = apiResult.summary
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Handle bold
+              .replace(/^\* /gm, '• ')                        // Handle bullets
+              .replace(/\n/g, '<br>');                        // Handle new lines
+
+              // Display summary and copy btn
+              outputArea.innerHTML = `
+              <div class="summary-text">${cleanSummary}</div>
+              <button id="copy-btn" class="secondary-btn" style="margin-top: 15px; width: 100%;">
+                  Copy Summary
+              </button>
+              `;
+
+              // copy fxn
+              document.getElementById('copy-btn').addEventListener('click', (e) => {
+                  navigator.clipboard.writeText(apiResult.summary);
+                  e.target.innerText = "✅ Copied to Clipboard!";
+                  setTimeout(() => { e.target.innerText = "Copy Summary"; }, 2000);
+              });
             }
           }
         );
