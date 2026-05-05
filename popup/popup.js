@@ -4,7 +4,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     const outputArea = document.getElementById('summary-output');
     const loadingState = document.getElementById('loading-state');
     const pageTitleElement = document.getElementById('page-title');
+    const settingsToggle = document.getElementById('settings-toggle');
+    const settingsView = document.getElementById('settings-view');
+    const apiKeyInput = document.getElementById('api-key-input');
+    const saveKeyBtn = document.getElementById('save-key-btn');
+    
+    // Toggle Settings View
+    settingsToggle.addEventListener('click', () => {
+      settingsView.classList.toggle('hidden');
+    });
 
+    // Save Key to Storage
+    saveKeyBtn.addEventListener('click', async () => {
+      const key = apiKeyInput.value.trim();
+      if (key) {
+          await chrome.storage.local.set({ apiKey: key });
+          alert("API Key saved locally! 🚀");
+          settingsView.classList.add('hidden');
+          apiKeyInput.value = ''; // Clear for security
+      }
+    });
     
     // Gets the current active tab and display its title
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -101,3 +120,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       outputArea.innerHTML = '<p class="placeholder-text">Click the button to generate a summary.</p>';
     });
   });
+
+  // github link routing
+  document.getElementById('github-link').addEventListener('click', () => {
+    chrome.tabs.create({ url: 'https://github.com/Simby1' });
+});

@@ -14,6 +14,7 @@
     </header>
 
     <main>
+      <!--Summary box-->
       <div id="summary-output" class="output-area">
         <!-- Summary will appear here -->
         <p class="placeholder-text">Click the button to generate a summary.</p>
@@ -23,6 +24,22 @@
         <div class="spinner"></div>
         <p>Summarizing...</p>
       </div>
+
+      <!-- settings for apikey inclusion -->
+      <div style="text-align: right;">
+        <button id="settings-toggle" style="background: none; border: none; cursor: pointer; font-size: 1rem;">Click to add your API Key to start summarizing!⚙️</button>
+      </div>
+
+      <!-- Hidden Settings Area -->
+      <div id="settings-view" class="hidden" style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+        <input type="password" id="api-key-input" placeholder="Paste Gemini API Key here" 
+              style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #23537A; background: rgba(255,255,255,0.05); color: white; font-size: 0.8rem;">
+        <button id="save-key-btn" class="secondary-btn" style="margin-top: 8px; width: 100%;">Save Key</button>
+      </div>
+
+      <div class="footer" style="margin-top: 20px; text-align: center; font-size: 0.65rem; color: #64748b; letter-spacing: 0.05em;">
+        BUILT BY <a href="#" id="github-link" style="color: #23537A; font-weight: 700; text-decoration: none;">bntyTechie</a>
+    </div>
     </main>
 
     <footer>
