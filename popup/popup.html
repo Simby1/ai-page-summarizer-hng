@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summify</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Summify - Swift AI Summarizer</h1>
+      <p id="page-title">Loading page info...</p>
+    </header>
+
+    <main>
+      <div id="summary-output" class="output-area">
+        <!-- Summary will appear here -->
+        <p class="placeholder-text">Click the button to generate a summary.</p>
+      </div>
+
+      <div id="loading-state" class="hidden">
+        <div class="spinner"></div>
+        <p>Summarizing...</p>
+      </div>
+    </main>
+
+    <footer>
+      <button id="summarize-btn" class="primary-btn">Summarize Page</button>
+      <button id="reset-btn" class="secondary-btn">Clear</button>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
