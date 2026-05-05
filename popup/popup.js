@@ -4,13 +4,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     const outputArea = document.getElementById('summary-output');
     const loadingState = document.getElementById('loading-state');
     const pageTitleElement = document.getElementById('page-title');
-  
+
+    
     // Gets the current active tab and display its title
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab) {
       pageTitleElement.textContent = tab.title;
     }
-  
+    // handling restricted URLs
+    const isRestrictedPage = tab.url.startsWith('chrome://') || 
+                            tab.url.startsWith('https://chromewebstore.google.com/') ||
+                            !tab.url.startsWith('http');
+
+    if (isRestrictedPage) {
+        pageTitleElement.textContent = "Extension cannot run on this page";
+        summarizeBtn.disabled = true;
+        summarizeBtn.style.opacity = "0.5";
+        summarizeBtn.innerText = "Summarizer Disabled";
+        return; // Exit early
+    }
+
+    if (tab) {
+        pageTitleElement.textContent = tab.title;
+    }
+
     // Click to summarize
     summarizeBtn.addEventListener('click', async () => {
       loadingState.classList.remove('hidden');
@@ -42,8 +59,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       } catch (error) {
         loadingState.classList.add('hidden');
         summarizeBtn.disabled = false;
-        outputArea.innerHTML = `<p style="color: #ef4444;">${error.message}</p>`;
-      }
+        
+        if (error.message.includes("Could not establish connection")) {
+            outputArea.innerHTML = `
+                <p style="color: #ef4444; font-weight: 600;">Connection Lost</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Please refresh the website you are trying to summarize and try again.</p>
+            `;
+        } else {
+            outputArea.innerHTML = `<p style="color: #ef4444;">${error.message}</p>`;
+        }
+    }
     });
   
     // Reset

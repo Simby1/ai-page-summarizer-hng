@@ -1,4 +1,5 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log("Content script received message:", request); // debug
     if (request.action === "GET_CONTENT") {
       const pageContent = extractMainContent();
       sendResponse({ content: pageContent });
